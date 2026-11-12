@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Travian Farm List Highlighter
 // @namespace    travian-farmlist-highlighter
-// @version      1.0.0
+// @version      1.1.0
 // @description  Highlights farm list rows whose last raid came back with full loot and no attack running, and colours the "last raid" time by age.
 // @match        *://*.travian.com/build.php*
 // @run-at       document-start
@@ -32,6 +32,12 @@
       ${Object.entries(AGE_COLORS).map(([k, c]) =>
         `table.slots td.lastRaid[data-gm-age="${k}"] .lastRaidReport .value { color: ${c} !important; font-weight: bold; }`
       ).join('\n')}
+
+      /* Marché > Créer une offre : champ quantité de largeur fixe, la fenêtre s'adapte au contenu */
+      .dialog.createOfferDialog { width: max-content !important; }
+      .dialog.createOfferDialog .resourcePicker .inputRatio .nominator { width: 100px; }
+      .dialog.createOfferDialog .resourcePicker .inputRatio .nominator input { width: 100% !important; }
+      .dialog.createOfferDialog .resourcePicker .inputRatio .denominator { white-space: nowrap; }
   `;
   (document.head || document.documentElement).appendChild(style);
 

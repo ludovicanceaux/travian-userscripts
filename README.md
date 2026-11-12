@@ -4,7 +4,7 @@ Free, open-source userscripts for [Travian: Legends](https://www.travian.com/), 
 
 | Script | What it does | Talks to the game server? |
 |---|---|---|
-| [Farm List Highlighter](#farm-list-highlighter) | Highlights the farm list rows worth re-raiding and colours the "last raid" time by age | No, it only restyles the page |
+| [Farm List Highlighter](#farm-list-highlighter) | Highlights the farm list rows worth re-raiding, colours the "last raid" time by age, and widens the amount field of the marketplace "create offer" dialog | No, it only restyles the page |
 | [Elephant Finder](#elephant-finder) | Finds oases guarded by elephants around a point on the map | Yes, it queries the map like the game does |
 
 Each script is a single file and is installed on its own: take one, or both.
@@ -21,24 +21,29 @@ Each script is a single file and is installed on its own: take one, or both.
 
 ## Farm List Highlighter
 
-For the farm lists in the Travian rally point. It makes two things visible at a glance:
+Mostly for the farm lists in the Travian rally point, where it makes two things visible at a glance:
 
 - **Rows worth re-raiding.** When the last raid on a target came back with full loot and no attack is currently on its way, the whole row is tinted red. Those targets most likely still have resources to take.
 - **Stale targets.** The "last raid" time is coloured by age: amber after 6 hours, orange after 12 hours, red for "yesterday", dark red for anything older. The colour disappears while an attack is running.
 
+It also fixes one annoyance in the marketplace:
+
+- **Amount field of the "create offer" dialog.** The game gives the amount field whatever room is left in a fixed-width dialog, so it shrinks as your stock grows and the stock figure wraps onto two lines. The script gives the field a fixed width, keeps the stock on one line, and lets the dialog grow to fit.
+
 Nothing is sent anywhere. The script only reads the page you are already looking at and changes its styling.
 
-Open a farm list in the rally point: rows and times are coloured immediately, and stay up to date as the list refreshes. The script runs on every `*.travian.com` game world, on the rally point page only.
+Open a farm list in the rally point: rows and times are coloured immediately, and stay up to date as the list refreshes. The script runs on every `*.travian.com` game world, on building pages only (`build.php`: rally point, marketplace).
 
 ### How it works
 
 - The highlighting of "full loot, nothing running" rows is pure CSS, using the `:has()` selector, so it follows the game's own re-rendering with no extra work. Browsers without `:has()` fall back to a small observer that tags the rows with a class.
 - The age colouring parses the "last raid" time, computes how many hours ago it was, and tags the cell with a threshold. A `MutationObserver` re-runs the check whenever the list changes, plus once a minute so ages keep moving.
+- The marketplace fix is four CSS rules scoped to the "create offer" dialog.
 
 ### Limitations
 
 - The word for "yesterday" is matched against the French interface (`hier`). On another interface language, rows from yesterday are coloured as "older" rather than "yesterday". Change the string in the script to your language's word to fix it.
-- Thresholds and colours are constants at the top of the script (`COLOR`, `AGE_COLORS`), edit them to taste.
+- Thresholds and colours are constants at the top of the script (`COLOR`, `AGE_COLORS`), edit them to taste. The width of the amount field (100px) is in the CSS block just below.
 
 ## Elephant Finder
 
